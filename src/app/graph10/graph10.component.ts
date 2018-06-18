@@ -1,12 +1,42 @@
+
+
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {StorageService} from '../storage.service';
 import {ObjectID} from '../object-id.enum';
+
 
 
 @Component({
   selector: 'app-graph10',
   templateUrl: './graph10.component.html',
 })
+
+export class Graph10Component  implements OnInit {
+
+
+  @Input()
+  contextID = -1;
+
+  private UID = 0;
+  public data: ChartDataRecord;
+
+  constructor(public service: StorageService) {
+    console.log('Chart constructor')
+    this.data = ChartData.voidChart();
+   }
+
+  ngOnInit() {
+    console.log('Chart init')
+    this.UID = this.service.registerObject(this, this.contextID);
+    if (this.contextID === -1) {
+      this.service.graficiInView.subscribe( data => {
+        console.log('grafico in view new event data');
+        this.data = data;
+      });
+    }
+    this.data = this.service.getDefaultChart(this.UID);
+  }
+
 export class Graph10Component implements OnInit {
   // lineChart
   @Output() grafico = new EventEmitter();
@@ -69,26 +99,23 @@ export class Graph10Component implements OnInit {
   public lineChartLegend = true;
   public lineChartType = 'line';
 
+
   public randomize(): void {
-    const _lineChartData: Array<any> = new Array(this.lineChartData.length);
-    for (let i = 0; i < this.lineChartData.length; i++) {
-      _lineChartData[i] = {data: new Array(this.lineChartData[i].data.length), label: this.lineChartData[i].label};
-      for (let j = 0; j < this.lineChartData[i].data.length; j++) {
-        _lineChartData[i].data[j] = Math.floor((Math.random() * 100) + 1);
-      }
-    }
-    this.lineChartData = _lineChartData;
+    console.log('Chart ' + this.contextID + ' query random chart');
+    // const newData = this.service.getRandomChart();
+    // this.data = newData;
+     this.data = this.service.getRandomChart();
   }
 
   // events
   public chartClicked(e: any): void {
+    console.log('Chart click on ' + this.UID);
+    this.service.setActiveChart(this.UID, this.data);
     console.log(e);
   }
 
   public chartHovered(e: any): void {
     console.log(e);
   }
-  ngOnInit() {
 
-  }
 }
