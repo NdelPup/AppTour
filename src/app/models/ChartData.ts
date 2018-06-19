@@ -9,6 +9,7 @@
  * ChartData            oggetto che contiene un array di ChartDataRecord
  *                      nel costruttore vengono creati tutti i record che verranno utilizzati nell'applicazione
  *                    TODO: aggiungere qui altri grafici da richiamare nell'applicazione
+ *
  */
 export class ChartData {
   private data: Array<ChartDataRecord> = [];
@@ -94,7 +95,9 @@ export class ChartData {
 
   getChart(index: number): ChartDataRecord {
     console.log('Query chart with index = ' + index);
-    return this.data[index];// .clone();
+
+    return this.data[index].clone();
+
   }
 
 }
@@ -105,7 +108,9 @@ export class ChartDataRecord {
               public lineChartOptions: any,
               public lineChartColors: Array<any>,
               public lineChartLegend: boolean,
-              public lineChartType: string) {
+              public lineChartType: string,
+              public tag: any) {
+
   }
 
   public static createChartRecord(lineChartData: Array<any>,
@@ -113,16 +118,20 @@ export class ChartDataRecord {
                                   lineChartOptions: any,
                                   lineChartColors: Array<any>,
                                   lineChartLegend: boolean,
-                                  lineChartType: string) {
+                                  lineChartType: string,
+                                  tag?: any) {
+
     return new ChartDataRecord(lineChartData,
       lineChartLabels,
       lineChartOptions,
       lineChartColors,
       lineChartLegend,
-      lineChartType);
+      lineChartType,
+      tag);
   }
 
-  clone() {
+  clone(): ChartDataRecord {
+
     const chartData = [];
     for (const record in this.lineChartData) {
       chartData.push(record);
@@ -152,7 +161,8 @@ export class ChartDataRecord {
       this.lineChartOptions,
       chartColors,
       this.lineChartLegend,
-      this.lineChartType
+      this.lineChartType,
+      this.tag
     );
   }
 }
